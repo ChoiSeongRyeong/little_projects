@@ -7,7 +7,7 @@
 gh repo clone ChoiSeongRyeong/little_projects
 
 # 폴더로 이동
-cd flask_app_demo_v1
+cd little_projects/flask_app_demo_v1
 
 # flask_app_demo image build
 docker build -t flask_app_demo:1.0 .
