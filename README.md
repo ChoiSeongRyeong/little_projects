@@ -44,7 +44,7 @@ import requests
 import pandas as pd
 import numpy as np
 
-# ip = {외부IP -> naver에서 "내ip" 검색}
+# ip = {{윈도우 cmd -> ipconfig, 맥 터미널 -> ifconfig | grep inet}}
 
 result1 = requests.get(f"http://{ip}:15000/")
 print(result1.content)
