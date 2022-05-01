@@ -16,13 +16,13 @@ docker build -t flask_app_demo:1.0 .
 docker run -d -p 15000:5000 flask_app_demo:1.0
 ```
 
-1. jupyter 컨테이너 올리기
+2. jupyter 컨테이너 올리기
 
 ```bash
 docker run -d -p 18888:8888 jupyter/scipy-notebook
 ```
 
-1. jupyter 컨테이너 토큰 확인
+3. jupyter 컨테이너 토큰 확인
 
 ```bash
 # container list -> 'jupyter/scipy-notebook'의 'CONTAINER ID' 확인
@@ -37,6 +37,42 @@ docker exec -it {CONTAINER_ID} /bin/bash
 # 토큰 복사 후 jupyter notebook 웹으로 로그인(http://127.0.0.1:18888)
 ```
 
-![스크린샷 2022-05-01 오후 7.57.16.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a4126798-5305-415a-99e3-f0512c056983/스크린샷_2022-05-01_오후_7.57.16.png)
+4. flask app 동작 확인
+```python
+## jupyter notebook
+import requests
+import pandas as pd
+import numpy as np
 
-1. flask app 동작 확인
+# ip = {외부IP -> naver에서 "내ip" 검색}
+
+result1 = requests.get(f"http://{ip}:15000/")
+print(result1.content)
+>> b'Hello Flask World'
+
+df = pd.DataFrame(np.arange(20).reshape(5,4))
+
+result2 = requests.post(f"http://{ip}:15000/get_shape", json={'df':df.to_json()})
+print(result2.json()['shape'])
+>> [5, 4]
+
+result3 = requests.post(f"http://{ip}:15000/get_preprocessed_df", json={'df':df.to_json()})
+print(pd.DataFrame(result3.json()))
+>> index	0	1	2	3
+0	0	0	1	2	3
+1	1	4	5	6	7
+2	2	8	9	10	11
+3	3	12	13	14	15
+4	4	16	17	18	19
+
+result4 = requests.post(f"http://{ip}:15000/get_preprocessed_df_and_shape", json={'df':df.to_json()})
+print(result4.headers['shape'])
+>> (5, 5)
+print(pd.DataFrame(result4.json()))
+>> index	0	1	2	3
+0	0	0	1	2	3
+1	1	4	5	6	7
+2	2	8	9	10	11
+3	3	12	13	14	15
+4	4	16	17	18	19
+```
